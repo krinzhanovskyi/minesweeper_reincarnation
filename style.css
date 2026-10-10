@@ -19,7 +19,6 @@ button {
   cursor: pointer;
 }
 
-/* Сетка для поля 10x10 */
 #board {
   display: grid;
   grid-template-columns: repeat(10, 30px);
@@ -38,7 +37,7 @@ button {
   justify-content: center;
   font-weight: bold;
   cursor: pointer;
-  user-select: none; /* Запрещаем случайное выделение текста при быстрых кликах */
+  user-select: none;
 }
 
 .cell:active {

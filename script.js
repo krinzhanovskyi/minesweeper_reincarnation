@@ -7,7 +7,6 @@ const restartBtn = document.getElementById("restart-btn");
 let board = [];
 let gameOver = false;
 
-// Привязываем перезапуск к кнопке
 restartBtn.addEventListener("click", initGame);
 
 function initGame() {
@@ -16,7 +15,6 @@ function initGame() {
   board = [];
   gameOver = false;
 
-  // 1. Создаем логическую матрицу поля
   for (let y = 0; y < BOARD_SIZE; y++) {
     const row = [];
     for (let x = 0; x < BOARD_SIZE; x++) {
@@ -33,7 +31,6 @@ function initGame() {
     board.push(row);
   }
 
-  // 2. Расставляем мины (пока случайно)
   let minesPlaced = 0;
   while (minesPlaced < MINES_COUNT) {
     const rx = Math.floor(Math.random() * BOARD_SIZE);
@@ -44,7 +41,6 @@ function initGame() {
     }
   }
 
-  // 3. Считаем цифры (мины вокруг каждой клетки)
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
       if (!board[y][x].isMine) {
@@ -53,19 +49,16 @@ function initGame() {
     }
   }
 
-  // 4. Отрисовываем поле в HTML
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
       const cellData = board[y][x];
       const cellEl = document.createElement("div");
       cellEl.classList.add("cell");
 
-      // Левый клик — открываем
       cellEl.addEventListener("click", () => revealCell(cellData));
 
-      // Правый клик — ставим флаг
       cellEl.addEventListener("contextmenu", (e) => {
-        e.preventDefault(); // Блокируем меню браузера
+        e.preventDefault();
         toggleFlag(cellData);
       });
 
@@ -75,7 +68,6 @@ function initGame() {
   }
 }
 
-// Подсчет соседних мин
 function countMines(x, y) {
   let count = 0;
   for (let dy = -1; dy <= 1; dy++) {
@@ -90,14 +82,12 @@ function countMines(x, y) {
   return count;
 }
 
-// Логика открытия ячейки
 function revealCell(cell) {
   if (gameOver || cell.isRevealed || cell.isFlagged) return;
 
   cell.isRevealed = true;
   cell.element.classList.add("revealed");
 
-  // Попали на мину
   if (cell.isMine) {
     cell.element.classList.add("mine");
     cell.element.innerText = "💣";
@@ -107,11 +97,9 @@ function revealCell(cell) {
     return;
   }
 
-  // Попали на цифру
   if (cell.neighborMines > 0) {
     cell.element.innerText = cell.neighborMines;
   } else {
-    // Попали на пустое поле — каскадное открытие (заливка)
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {
         const nx = cell.x + dx;
@@ -125,7 +113,6 @@ function revealCell(cell) {
   checkWin();
 }
 
-// Установка флажка
 function toggleFlag(cell) {
   if (gameOver || cell.isRevealed) return;
   cell.isFlagged = !cell.isFlagged;
@@ -133,7 +120,6 @@ function toggleFlag(cell) {
   cell.element.classList.toggle("flag", cell.isFlagged);
 }
 
-// Показать все мины при поражении
 function revealAll() {
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
@@ -145,7 +131,6 @@ function revealAll() {
   }
 }
 
-// Проверка на победу
 function checkWin() {
   let revealedCount = 0;
   for (let y = 0; y < BOARD_SIZE; y++) {
@@ -153,12 +138,10 @@ function checkWin() {
       if (board[y][x].isRevealed) revealedCount++;
     }
   }
-  // Если открыты все клетки кроме мин — победа
   if (revealedCount === BOARD_SIZE * BOARD_SIZE - MINES_COUNT) {
     gameOver = true;
     statusElement.innerText = "Победа!";
   }
 }
 
-// Запуск первой игры при загрузке скрипта
 initGame();
