@@ -3,21 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Сапёр</title>
+    <title>Minesweeper by reincarnation</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <h2>Сапёр</h2>
+    <main class="game-container">
+      <header class="header">
+        <h1>Minesweeper</h1>
+        <div class="controls">
+          <select id="difficulty-select" aria-label="Уровень сложности">
+            <option value="easy">Newbie (9×9)</option>
+            <option value="medium">Amateur (16×16)</option>
+            <option value="hard">Professional (30×16)</option>
+          </select>
+          <button id="restart-btn">Restart</button>
+        </div>
+      </header>
 
-    <div class="info">
-      <span id="status">Игра началась!</span>
-      <span>Мин: 10</span>
-    </div>
+      <div class="hud">
+        <div class="hud-item">🚩 <span id="mines-count">10</span></div>
+        <div id="status" class="status">Ready</div>
+        <div class="hud-item">⏱️ <span id="timer">000</span></div>
+      </div>
 
-    <button id="restart-btn">Перезапуск</button>
+      <div id="board" class="board"></div>
+    </main>
 
-    <div id="board"></div>
+    <script>
+      // Auto-detect folder structure (root vs js/ subfolder) and report missing files
+      const files = ["config.js", "timer.js", "board.js", "main.js"];
 
-    <script src="script.js" defer></script>
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.body.appendChild(s);
+        });
+      }
+
+      async function boot() {
+        for (const file of files) {
+          try {
+            await loadScript(file);
+          } catch {
+            try {
+              await loadScript("js/" + file);
+            } catch {
+              const status = document.getElementById("status");
+              status.textContent = `File is not found: ${file}`;
+              status.classList.add("lost");
+              console.error(
+                `Missing file: ${file} (checked "./${file}" and "./js/${file}")`,
+              );
+              return;
+            }
+          }
+        }
+      }
+
+      boot();
+    </script>
   </body>
 </html>
