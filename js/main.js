@@ -85,14 +85,14 @@ function handleActionResult({ hitMine, changed }) {
     gameOver = true;
     timer.stop();
     revealAllMines();
-    setStatus("Поражение!", true);
+    setStatus("Defeat!", true);
     return;
   }
 
   if (board.isWin()) {
     gameOver = true;
     timer.stop();
-    setStatus("Победа!", false);
+    setStatus("Victory!", false);
   }
 }
 
